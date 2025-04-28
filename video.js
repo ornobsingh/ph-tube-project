@@ -11,7 +11,15 @@ const loadCategories = async () => {
 };
 
 const displayCategories = (categories) => {
-  console.log(categories);
+  const categoriesContainer = document.getElementById('categories');
+
+  categories.forEach((item) => {
+    const button = document.createElement("button");
+    button.classList = "btn";
+    button.innerText = item.category;
+
+    categoriesContainer.appendChild(button)
+  });
 };
 
 loadCategories();
