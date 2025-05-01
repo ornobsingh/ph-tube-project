@@ -6,6 +6,13 @@ function getTimeString(time) {
   return `${hour} hour ${minute} minute ${remainingSecond} second ago`;
 }
 
+const removeActiveClass = () => {
+  const buttons = document.getElementsByClassName("category-btn");
+  for(let btn of buttons) {
+    btn.classList.remove("active")
+  }
+};
+
 const loadCategories = async () => {
   try {
     const response = await fetch(
@@ -35,7 +42,14 @@ const loadCategoryVideos = (id) => {
 
   fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
     .then((res) => res.json())
-    .then((data) => displayVideos(data.category))
+    .then((data) => {
+      removeActiveClass();
+
+      const activeBtn = document.getElementById(`btn-${id}`);
+      activeBtn.classList.add("active");
+
+      displayVideos(data.category);
+    })
     .catch((error) => console.log(error));
 };
 
@@ -45,7 +59,7 @@ const displayCategories = (categories) => {
   categories.forEach((item) => {
     const buttonContainer = document.createElement("div");
     buttonContainer.innerHTML = `
-    <button onclick="loadCategoryVideos(${item.category_id})" class="btn">${item.category}</button>
+    <button id="btn-${item.category_id}" onclick="loadCategoryVideos(${item.category_id})" class="btn category-btn">${item.category}</button>
     `;
 
     categoriesContainer.appendChild(buttonContainer);
@@ -57,7 +71,7 @@ const displayVideos = (videos) => {
   videoContainer.innerHTML = "";
 
   if (videos.length === 0) {
-    videoContainer.classList.remove("grid" );
+    videoContainer.classList.remove("grid");
 
     videoContainer.innerHTML = `
       <div class="min-h-[280px] flex flex-col gap-5 justify-center items-center">
@@ -67,7 +81,7 @@ const displayVideos = (videos) => {
     `;
     return;
   } else {
-    videoContainer.classList.add("grid" );
+    videoContainer.classList.add("grid");
   }
 
   videos.forEach((video) => {
